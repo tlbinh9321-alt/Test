@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #0f172a;
+  --navy-mid: #1e293b;
+  --red: #b91c1c;
+  --red-light: #dc2626;
+  --gold: #d4a017;
+  --gold-light: #e8b84b;
+  --cream: #f8f5f0;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --glass: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --card-shadow: 0 4px 24px rgba(15, 23, 42, 0.1);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  background-color: #f8f5f0;
+  color: #1e293b;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4a017;
+  border-radius: 3px;
+}
+
+.dot-texture {
+  background-image: radial-gradient(
+    circle,
+    rgba(212, 160, 23, 0.04) 1px,
+    transparent 1px
+  );
+  background-size: 40px 40px;
+}
+
+.dot-texture-sm {
+  background-image: radial-gradient(
+    circle,
+    rgba(212, 160, 23, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(212, 160, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 160, 23, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(16px);
+}
+
+.pull-quote {
+  border-left: 3px solid #d4a017;
+  padding: 16px 24px;
+  background: rgba(212, 160, 23, 0.05);
+  border-radius: 0 10px 10px 0;
+}
+
+.roadmap-line::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #d4a017, rgba(212, 160, 23, 0.1));
+}
+
+@keyframes pulsePin {
+  0% {
+    box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(185, 28, 28, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(185, 28, 28, 0);
+  }
+}
+.animate-pulse-pin {
+  animation: pulsePin 2s ease infinite;
+}
+
+@keyframes pulsePinGold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(212, 160, 23, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 160, 23, 0);
+  }
+}
+.animate-pulse-pin-gold {
+  animation: pulsePinGold 2s ease infinite;
+}
+
+@keyframes bounceY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-bounce-y {
+  animation: bounceY 2s ease infinite;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.upload-zone:hover {
+  background: rgba(212, 160, 23, 0.08);
+  border-color: #b8890e;
+}
+
+.logo-ring-outer {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #d4a017;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-ring-inner {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #d4a017;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-dot {
+  width: 6px;
+  height: 6px;
+  background: #d4a017;
+  border-radius: 50%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Noto Serif", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+p,
+span,
+a,
+li,
+label,
+input,
+textarea,
+select,
+button {
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: "Noto Serif", Georgia, serif;
+}

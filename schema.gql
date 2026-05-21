@@ -1,0 +1,56 @@
+type User @table {
+  username: String!
+  email: String!
+  passwordHash: String!
+  createdAt: Timestamp!
+  displayName: String
+  profilePictureUrl: String
+  bio: String
+}
+
+type ThreeDModel @table {
+  title: String!
+  description: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  isPublic: Boolean!
+  fileUrl: String!
+  fileFormat: String!
+  thumbnailUrl: String
+  uploader: User
+}
+
+type Vlog @table {
+  title: String!
+  description: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  isPublic: Boolean!
+  videoUrl: String!
+  durationInSeconds: Int!
+  thumbnailUrl: String
+  uploader: User
+}
+
+type Comment @table {
+  text: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  author: User
+  onThreeDModel: ThreeDModel
+  onVlog: Vlog
+}
+
+type Interaction @table {
+  interactionType: String!
+  createdAt: Timestamp!
+  interactor: User
+  onThreeDModel: ThreeDModel
+  onVlog: Vlog
+}
+
+type Follow @table(key: ["follower", "following"]) {
+  follower: User!
+  following: User!
+  createdAt: Timestamp!
+}
