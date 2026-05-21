@@ -1,177 +1,91 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged,
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  User as FirebaseUser
-} from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 
-export type UserRole = 'user' | 'admin' | 'editor'
+export type UserRole = 'user' | 'admin'
 
 export interface AuthUser {
-  uid: string
-  displayName: string
+  id: string
   name: string
   email: string
-  photoURL?: string
+  avatar?: string
   role: UserRole
-  createdAt?: any
-  status?: string
+  joinDate: string
+  contributions: number
   bio?: string
   province?: string
-  joinDate?: string
-  contributions: number
 }
 
 interface AuthContextValue {
   user: AuthUser | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name: string) => Promise<void>
   loginWithGoogle: () => Promise<void>
   loginWithFacebook: () => Promise<void>
-  logout: () => Promise<void>
-  updateProfile: (data: Partial<AuthUser>) => Promise<void>
+  logout: () => void
+  updateProfile: (data: Partial<AuthUser>) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005/api'
+// ── Mock users (thay bằng API thật sau) ──────────────────
+const MOCK_ADMIN: AuthUser = {
+  id: 'admin-1',
+  name: 'Lê Thanh Bình',
+  email: 'admin@vietsuso.vn',
+  role: 'admin',
+  joinDate: 'Tháng 1, 2026',
+  contributions: 24,
+  bio: 'Đồng sáng lập Việt Sử Số — PTIT HCM',
+  province: 'TP. Hồ Chí Minh',
+}
 
+const MOCK_USER: AuthUser = {
+  id: 'user-1',
+  name: 'Nguyễn Văn An',
+  email: 'user@example.com',
+  role: 'user',
+  joinDate: 'Tháng 3, 2026',
+  contributions: 3,
+  bio: 'Giáo viên lịch sử tại THPT Nguyễn Du',
+  province: 'Bình Dương',
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Hàm gọi backend để xác thực và lấy dữ liệu user từ Firestore
-  const syncUserWithBackend = async (firebaseUser: FirebaseUser) => {
-    try {
-      const idToken = await firebaseUser.getIdToken()
-      const response = await fetch(`${API_URL}/auth/verify-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken })
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        const userData = data.user
-        // Map displayName to name if name is missing
-        setUser({
-          ...userData,
-          name: userData.name || userData.displayName || userData.email.split('@')[0],
-          contributions: userData.contributions || 0,
-          joinDate: userData.joinDate || (userData.createdAt ? new Date(userData.createdAt._seconds * 1000).toLocaleDateString() : 'Mới tham gia')
-        })
-      } else {
-        console.error('Failed to sync user with backend')
-        setUser(null)
-      }
-    } catch (error) {
-      console.error('Error syncing user:', error)
-      setUser(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Lắng nghe trạng thái auth từ Firebase
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        await syncUserWithBackend(firebaseUser)
-      } else {
-        setUser(null)
-        setIsLoading(false)
-      }
-    })
-
-    return () => unsubscribe()
-  }, [])
-
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, _password: string) => {
     setIsLoading(true)
-    try {
-      await signInWithEmailAndPassword(auth, email, password)
-    } catch (error) {
-      console.error('Login error:', error)
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const register = useCallback(async (email: string, password: string, name: string) => {
-    setIsLoading(true)
-    try {
-      // 1. Đăng ký ở backend (để tạo record trong Firestore và Auth)
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, displayName: name })
-      })
-
-      if (!response.ok) {
-        const errData = await response.json()
-        throw new Error(errData.message || 'Registration failed')
-      }
-
-      // 2. Sau khi backend tạo xong, đăng nhập ở client
-      await signInWithEmailAndPassword(auth, email, password)
-    } catch (error) {
-      console.error('Registration error:', error)
-      setIsLoading(false)
-      throw error
-    }
+    await new Promise((r) => setTimeout(r, 1000)) // simulate API
+    // Mock: email admin → vào admin, còn lại → user thường
+    setUser(email.includes('admin') ? MOCK_ADMIN : MOCK_USER)
+    setIsLoading(false)
   }, [])
 
   const loginWithGoogle = useCallback(async () => {
     setIsLoading(true)
-    try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-    } catch (error) {
-      console.error('Google login error:', error)
-      setIsLoading(false)
-      throw error
-    }
+    await new Promise((r) => setTimeout(r, 1000))
+    setUser(MOCK_USER)
+    setIsLoading(false)
   }, [])
 
   const loginWithFacebook = useCallback(async () => {
     setIsLoading(true)
-    try {
-      const provider = new FacebookAuthProvider()
-      await signInWithPopup(auth, provider)
-    } catch (error) {
-      console.error('Facebook login error:', error)
-      setIsLoading(false)
-      throw error
-    }
+    await new Promise((r) => setTimeout(r, 1000))
+    setUser(MOCK_USER)
+    setIsLoading(false)
   }, [])
 
-  const logout = useCallback(async () => {
-    try {
-      await signOut(auth)
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }, [])
+  const logout = useCallback(() => setUser(null), [])
 
-  const updateProfile = useCallback(async (data: Partial<AuthUser>) => {
-    setUser(prev => prev ? { ...prev, ...data } : null)
-    // Note: In a real app, you would also call an API to persist this to Firestore
+  const updateProfile = useCallback((data: Partial<AuthUser>) => {
+    setUser((prev) => (prev ? { ...prev, ...data } : prev))
   }, [])
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, register, loginWithGoogle, loginWithFacebook, logout, updateProfile }}
+      value={{ user, isLoading, login, loginWithGoogle, loginWithFacebook, logout, updateProfile }}
     >
       {children}
     </AuthContext.Provider>

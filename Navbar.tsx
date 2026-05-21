@@ -78,16 +78,16 @@ export function Navbar({ onContributeClick }: NavbarProps) {
               className="flex items-center gap-2 cursor-pointer bg-transparent border-none text-white/80 hover:text-white transition-colors"
             >
               <div className="w-8 h-8 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center text-xs font-bold text-gold">
-                {user.displayName.charAt(0)}
+                {user.name.charAt(0)}
               </div>
-              <span className="text-sm font-medium">{user.displayName.split(' ').pop()}</span>
+              <span className="text-sm font-medium">{user.name.split(' ').pop()}</span>
               <ChevronDown size={14} className={clsx('transition-transform duration-200', dropdownOpen && 'rotate-180')} />
             </button>
 
             {dropdownOpen && (
               <div className="absolute right-0 top-[calc(100%+12px)] w-[200px] bg-[#0F172A] border border-white/[0.1] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden z-50">
                 <div className="px-4 py-3 border-b border-white/[0.07]">
-                  <p className="text-sm font-semibold text-white truncate">{user.displayName}</p>
+                  <p className="text-sm font-semibold text-white truncate">{user.name}</p>
                   <p className="text-[11px] text-white/40 truncate">{user.email}</p>
                 </div>
                 <div className="py-1">

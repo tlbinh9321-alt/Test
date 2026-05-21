@@ -43,15 +43,11 @@ export function ContributeModal({ isOpen, onClose }: ContributeModalProps) {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState<ContributeFormData>(INITIAL)
   const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const reset = () => {
     setStep(1)
     setForm(INITIAL)
     setSubmitted(false)
-    setIsSubmitting(false)
-    setError(null)
   }
 
   const handleClose = () => {
@@ -59,45 +55,9 @@ export function ContributeModal({ isOpen, onClose }: ContributeModalProps) {
     setTimeout(reset, 300)
   }
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true)
-    setError(null)
-    
-    try {
-      const formData = new FormData()
-      formData.append('name', form.name)
-      formData.append('email', form.email)
-      formData.append('role', form.role)
-      formData.append('province', form.province)
-      formData.append('memoryTitle', form.memoryTitle)
-      formData.append('period', form.period)
-      formData.append('content', form.content)
-      
-      form.files.forEach((file) => {
-        formData.append('files', file)
-      })
-
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005/api'
-      console.log('Submitting to:', `${API_URL}/submissions/public`)
-      
-      const response = await fetch(`${API_URL}/submissions/public`, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (response.ok) {
-        setSubmitted(true)
-        setStep(4)
-      } else {
-        const data = await response.json()
-        throw new Error(data.message || `Lỗi: ${response.status}`)
-      }
-    } catch (err: any) {
-      console.error('Submission error:', err)
-      setError(err.message || 'Có lỗi xảy ra, vui lòng thử lại sau.')
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleSubmit = () => {
+    setSubmitted(true)
+    setStep(4)
   }
 
   const inputCls =
@@ -338,28 +298,19 @@ export function ContributeModal({ isOpen, onClose }: ContributeModalProps) {
                   </p>
                 )}
 
-                <div className="flex flex-col gap-3 mt-5">
-                  {error && (
-                    <p className="text-red-500 text-xs text-center bg-red-50 py-2 rounded-lg border border-red-100">{error}</p>
-                  )}
-                  <div className="flex gap-2.5">
-                    <button
-                      onClick={() => setStep(2)}
-                      className="bg-cream text-navy border-[1.5px] border-navy/15 rounded-full px-6 py-[15px] text-sm font-semibold cursor-pointer font-sans transition-all duration-300 hover:border-navy flex-shrink-0"
-                    >
-                      ← Quay lại
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      disabled={isSubmitting}
-                      className={clsx(
-                        "flex-1 bg-red-vss text-white border-none rounded-full py-[15px] text-[15px] font-semibold cursor-pointer font-sans transition-all duration-300 hover:bg-red-light",
-                        isSubmitting && "opacity-50 cursor-not-allowed"
-                      )}
-                    >
-                      {isSubmitting ? 'Đang gửi...' : 'Gửi Ký Ức'}
-                    </button>
-                  </div>
+                <div className="flex gap-2.5 mt-5">
+                  <button
+                    onClick={() => setStep(2)}
+                    className="bg-cream text-navy border-[1.5px] border-navy/15 rounded-full px-6 py-[15px] text-sm font-semibold cursor-pointer font-sans transition-all duration-300 hover:border-navy flex-shrink-0"
+                  >
+                    ← Quay lại
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="flex-1 bg-red-vss text-white border-none rounded-full py-[15px] text-[15px] font-semibold cursor-pointer font-sans transition-all duration-300 hover:bg-red-light"
+                  >
+                    Gửi Ký Ức
+                  </button>
                 </div>
               </div>
             )}
